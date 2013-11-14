@@ -1,10 +1,11 @@
 (* Reverse a list. *)
 
-let rev list = 
-  let rec aux acc = function
-    | [] -> acc
-    | h::t -> aux (h::acc) t
-  in aux [] list
+let rec rev ?(blt=[]) = function
+    | [] -> blt
+    | h::t -> rev t ~blt:(h::blt)
 ;;
+    
+(* This function is tail-recursive: it uses a constant amount of 
+   stack memory regardless of list size. *)
 
 assert (rev [`a ; `b ; `c] = [`c ; `b ; `a]) ;;

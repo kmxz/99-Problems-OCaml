@@ -3,15 +3,17 @@
 (* Assuming here that if the length of the first part is longer than the entire
    list, then the first part is the list and the second part is empty. *)
 
-let split list n = 
+(* Pure (w/o library) *)
 
-  let rec aux i acc = function
-    | [] -> List.rev acc, []
-    | h :: t as l -> if i = 0 then List.rev acc, l else aux (i-1) (h :: acc) t
-  in
+let rec spl lst ctp = match lst with
+    | [] -> ([], [])
+    | h::t -> if ctp = 0 then ([], t) else begin let (a, b) = spl t (ctp - 1) in (h::a, b) end
+    
+(* Tail recursive *)
 
-  aux n [] list
-;;
+let rec spl lst ?(hd=[]) ctp = match lst with
+    | [] -> (List.rev hd, [])
+    | h::t -> if ctp = 0 then (List.rev hd, t) else begin spl t (ctp - 1) ~hd:(h::hd) end 
 
-assert (split [`a;`b;`c;`d;`e;`f;`g;`h;`i;`j] 3 = 
+assert (spl [`a;`b;`c;`d;`e;`f;`g;`h;`i;`j] 3 = 
     ([`a;`b;`c] , [`d;`e;`f;`g;`h;`i;`j])) ;;

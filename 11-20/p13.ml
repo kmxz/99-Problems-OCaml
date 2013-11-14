@@ -8,19 +8,12 @@ type 'a rle =
   | Many of (int * 'a)
 ;;
 
-let encode list = 
-
-  let rle count x = if count = 0 then One x else Many (count + 1, x) in
-
-  let rec aux count acc = function
-    | [] -> [] (* Can only be reached if original list is empty *)
-    | [x] -> rle count x :: acc
-    | a :: (b :: _ as t) -> if a = b then aux (count + 1) acc t else aux 0 (rle count a :: acc) t
-  in
-
-  List.rev (aux 0 [] list) 
+let rec enc ?(ald=0) = function
+    | a::(b::c as t) when a = b -> enc t ~ald:(ald + 1)
+    | a::b -> (if ald = 0 then One a else (Many (ald + 1, a))) :: (enc b ~ald:0)
+    | [] -> []
 ;;
 
-assert (encode [`a;`a;`a;`a;`b;`c;`c;`a;`a;`d;`e;`e;`e;`e] = 
+assert (enc [`a;`a;`a;`a;`b;`c;`c;`a;`a;`d;`e;`e;`e;`e] = 
     [Many (4,`a) ; One `b ; Many (2,`c) ; Many (2,`a) ; One `d ; Many (4,`e)]) ;;
 

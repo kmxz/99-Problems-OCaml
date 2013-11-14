@@ -1,13 +1,8 @@
 (* Drop every N'th element from a list *)
 
-let drop list n =
-
-  let rec aux i = function
+let rec drp l ?(d=1) t = match l with
     | [] -> []
-    | h :: t -> if i = n then aux 1 t else h :: aux (i+1) t
-  in
-
-  aux 1 list
+    | hd::tl -> if d = t then drp tl t else begin hd::(drp tl t ~d:(d+1)) end
 ;;
 
-assert (drop [`a;`b;`c;`d;`e;`f;`g;`h;`i;`j] 3 = [`a;`b;`d;`e;`g;`h;`j]) ;;
+assert (drp [`a;`b;`c;`d;`e;`f;`g;`h;`i;`j] 3 = [`a;`b;`d;`e;`g;`h;`j]) ;;

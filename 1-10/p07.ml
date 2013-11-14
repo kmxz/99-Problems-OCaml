@@ -19,13 +19,12 @@ let example =
    to an accumulator, which flattens the list in inverse order. It can then
    be reversed to obtain the actual flattened list. *)
 
-let flatten list = 
-  let rec aux acc = function
-    | [] -> acc
-    | One x :: t -> aux (x :: acc) t
-    | Many l :: t -> aux (aux acc l) t
-  in
-  List.rev (aux [] list) 
+let flat l =
+    let rec fldl nei lst = begin match nei with
+        | One x -> x::lst
+        | Many x -> List.fold_right fldl x lst
+    end in
+    List.fold_right fldl l []
 ;;
 
 assert (flatten example = [ `a ; `b ; `c ; `d ; `e ])

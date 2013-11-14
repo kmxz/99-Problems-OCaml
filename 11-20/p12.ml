@@ -5,24 +5,28 @@ type 'a rle =
   | Many of (int * 'a)
 ;;
 
-let decode list = 
+(* Pure *)
 
-  let rec many acc n x = 
-    if n = 0 then acc else many (x :: acc) (n-1) x
-  in
-
-  let rec aux acc = function
-    | [] -> acc
-    | One x :: t -> aux (x :: acc) t
-    | Many (n,x) :: t -> aux (many acc n x) t
-  in
-
-  aux [] (List.rev list)
+let rec dec = function
+    | (One e)::tl ->  e :: dec tl
+    | (Many (0, e))::tl -> dec tl
+    | (Many (c, e))::tl -> e :: dec ((Many (c - 1, e))::tl)
+    | [] -> []
 ;;
+    
+(* Library *)
 
+let dec l = 
+    let mf = function
+        | One e -> [e]
+        | Many (c, e) -> Array.to_list(Array.make c e)
+    in
+    List.flatten (List.map mf l)
+;;
+            
 let example_from = 
   [Many (4,`a) ; One `b ; Many (2,`c) ; Many (2,`a) ; One `d ; Many (4,`e)] ;;
 
 let example_to = [`a;`a;`a;`a;`b;`c;`c;`a;`a;`d;`e;`e;`e;`e] ;;
 
-assert (decode example_from = example_to) ;;
+assert (dec example_from = example_to) ;;

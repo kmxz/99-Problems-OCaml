@@ -8,28 +8,12 @@ type 'a rle =
   | Many of (int * 'a)
 ;;
 
-let pack list = 
-
-  let rec aux current acc = function
-    | [] -> [] (* Can only be reached if original list is empty *)
-    | [x] -> (x :: current) :: acc
-    | a :: (b :: _ as t) -> if a = b then aux (a :: current) acc t else aux [] ((a :: current) :: acc) t
-  in
-
-  List.rev (aux [] [] list) 
-;;
-
-let encode list =
-  let rec aux = function 
+let rec enc ?(ald=0) = function
+    | a::(b::c as t) when a = b -> enc t ~ald:(ald + 1)
+    | a::b -> (if ald = 0 then One a else (Many (ald + 1, a))) :: (enc b ~ald:0)
     | [] -> []
-    | [] :: t -> aux t
-    | [x] :: t -> One x :: aux t
-    | (x :: l) :: t -> Many (1 + List.length l , x) :: aux t
-  in
-
-  aux (pack list) 
 ;;
 
-assert (encode [`a;`a;`a;`a;`b;`c;`c;`a;`a;`d;`e;`e;`e;`e] = 
+assert (enc [`a;`a;`a;`a;`b;`c;`c;`a;`a;`d;`e;`e;`e;`e] = 
     [Many (4,`a) ; One `b ; Many (2,`c) ; Many (2,`a) ; One `d ; Many (4,`e)]) ;;
 

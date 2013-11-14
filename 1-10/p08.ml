@@ -1,8 +1,9 @@
 (* Eliminate consecutive duplicates of list elements *)
 
 let rec compress = function
-  | a :: (b :: _ as t) -> if a = b then compress t else a :: compress t
-  | smaller -> smaller
+    | a::(b::c as t) when a = b -> compress t
+    | a::b -> a :: (compress b)
+    | [] -> []
 ;;
 
 (* Drops the first element if it's equal to the second element, then recursively work 

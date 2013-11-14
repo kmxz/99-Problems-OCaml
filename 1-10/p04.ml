@@ -1,14 +1,12 @@
 (* Find the number of elements of a list *)
 
-let length list =
-  let rec aux n = function
-    | [] -> n
-    | _::t -> aux (n+1) t
-  in aux 0 list
+let rec lth ?(ini=0) lst = match lst with
+    | [] -> ini
+    | _::t -> lth t ~ini:(ini + 1)
 ;;
 
 (* This function is tail-recursive: it uses a constant amount of 
    stack memory regardless of list size. *)
 
-assert (length [ `a ; `b ; `c] = 3) ;;
-assert (length [] = 0) ;;
+assert (lth [ `a ; `b ; `c] = 3) ;;
+assert (lth [] = 0) ;;

@@ -1,28 +1,13 @@
 (* Extract a given number of randomly selected elements from a list *)
 
-(* Deterministic, for testing. Replace with Random.int to get true random results *)
-let random n = 1337 mod n ;;
-
-let rec rand_select list n = 
-
-  let rec extract acc n = function
-    | [] -> raise Not_found
-    | h :: t -> if n = 0 then h, acc @ t else extract (h::acc) (n-1) t
-  in
-
-  let extract_rand list len = 
-    extract [] (random len) list 
-  in
-
-  let rec aux n acc list len = 
-    if n = 0 then acc else
-      let picked, rest = extract_rand list len in 
-      aux (n-1) (picked :: acc) rest (len-1)
-  in
-
-  let len = List.length list in
-
-  aux (min n len) [] list len 
+let rand_select lst total = 
+    let len = List.length lst in
+    let rec pick rst ori = 
+        if rst > len then ori else
+        (pick (rst + 1) ((Random.int rst)::ori))  in
+    let rec drp t = function
+        | [] -> raise (Failure "No such position!")
+        | hd::tl -> if t = 0 then (hd, tl) else begin let (rh, rs) = (drp (t-1) tl) in (rh, hd::rs) end in
+    let pls = ref lst
+    in List.map (fun x -> let (pu, rs) = (drp x (!pls)) in pls := rs; pu) (pick (len - total + 1) [])
 ;;
-
-assert (rand_select [`a;`b;`c;`d;`e;`f;`g;`h] 3 = [`h;`a;`b]) ;; 

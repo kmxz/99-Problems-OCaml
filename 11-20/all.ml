@@ -52,12 +52,34 @@
 
     let rec spl lst ctp = match lst with
         | [] -> ([], [])
-        | h::t -> if ctp = 0 then ([], t) else begin let (a, b) = spl t (ctp - 1) in (h::a, b) end
+        | h::t -> if ctp = 0 then ([], lst) else begin let (a, b) = spl t (ctp - 1) in (h::a, b) end
         
     (* Tail recursive *)
     
     let rec spl lst ?(hd=[]) ctp = match lst with
         | [] -> (List.rev hd, [])
-        | h::t -> if ctp = 0 then (List.rev hd, t) else begin spl t (ctp - 1) ~hd:(h::hd) end 
+        | h::t -> if ctp = 0 then (List.rev hd, lst) else begin spl t (ctp - 1) ~hd:(h::hd) end 
         
 (* 18. Extract a slice from a list. *)
+
+    (* Using spl in p17 *)
+
+    let slice lst stp edp = let (h1, t1) = spl lst (stp - 1) in let (h2, _) = spl t1 (edp - stp + 1) in h2
+    
+(* 19. Rotate a list N places to the left. *)
+
+    (* A naive implementation, Using spl in p17 *)
+    
+    let rotate lst pos = 
+        let rpos = 
+            let len = List.length lst
+            in
+            (fun x -> if x < 0 then x + len else x) (pos mod len)
+        in
+        let (a, b) = spl lst rpos in b @ a
+        
+(* 20. Remove the K'th element from a list. *)
+
+   let rec drp t = function
+        | [] -> []
+        | hd::tl -> if t = 0 then tl else begin hd::(drp (t-1) tl) end 

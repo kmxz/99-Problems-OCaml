@@ -7,13 +7,15 @@
 
 let rec spl lst ctp = match lst with
     | [] -> ([], [])
-    | h::t -> if ctp = 0 then ([], t) else begin let (a, b) = spl t (ctp - 1) in (h::a, b) end
+    | h::t -> if ctp = 0 then ([], lst) else begin let (a, b) = spl t (ctp - 1) in (h::a, b) end
+;;
     
 (* Tail recursive *)
 
 let rec spl lst ?(hd=[]) ctp = match lst with
     | [] -> (List.rev hd, [])
-    | h::t -> if ctp = 0 then (List.rev hd, t) else begin spl t (ctp - 1) ~hd:(h::hd) end 
+    | h::t -> if ctp = 0 then (List.rev hd, lst) else begin spl t (ctp - 1) ~hd:(h::hd) end 
+;;
 
 assert (spl [`a;`b;`c;`d;`e;`f;`g;`h;`i;`j] 3 = 
     ([`a;`b;`c] , [`d;`e;`f;`g;`h;`i;`j])) ;;

@@ -1,22 +1,15 @@
 (* Generate the combinations of K distinct objects chosen from the N elements of a list. *)
 
-(* This is actually fairly easy in prolog (the original language for the problem), but it gets
-   a little bit harder for OCaml. The code below can be understood as an imperative traversal,
-   which uses a provided 'emit' function to emit all possible lists of size k. *)
+(* I have to admit that my implementation is not as elegant as the orignal one *)
 
-let extract k list = 
-
-  let rec aux k acc emit = function
-    | [] -> acc
-    | h :: t -> 
-      if k = 1 then aux k (emit [h] acc) emit t else 
-	let new_emit x = emit (h :: x) in
-	aux k (aux (k-1) acc new_emit t) emit t
-  in
-
-  let emit x acc = x :: acc in
-
-  aux k [] emit list 
+let extract k l = 
+    let rec esingle rmditm rmdlst rmdtot current_list current_total =
+        if rmditm = 0 then
+            current_list::current_total
+        else let hd::tl = rmdlst in
+            esingle (rmditm - 1) tl (rmdtot - 1) (hd::current_list) (if rmditm < rmdtot then (esingle rmditm tl (rmdtot - 1) current_list current_total) else current_total)
+    in let len = List.length l in
+    List.map List.rev (esingle k l len [] [])
 ;;
 
-assert (extract 2 [`a;`b;`c;`d] = [[`c;`d]; [`b;`d]; [`b;`c]; [`a;`d]; [`a;`c]; [`a;`b]]) ;;
+assert (extract 2 [`a;`b;`c;`d] = [[`a;`b]; [`a;`c]; [`a;`d]; [`b;`c]; [`b;`d]; [`c;`d]]) ;;

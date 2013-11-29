@@ -1,30 +1,15 @@
 (* Generate a random permutation of the elements of a list. *)
 
-let random n = 1337 mod n ;;
+(* Making use of solution of 24, which further depends on 22 and 23 *)
 
-let rec permutation list = 
+let permutation l = let len = List.length l in let seed = uld len len in
+    List.map (fun i -> List.nth l (i - 1)) seed
 
-  let rec extract acc n = function
-    | [] -> raise Not_found
-    | h :: t -> if n = 0 then h, acc @ t else extract (h::acc) (n-1) t
-  in
+(* Implementing Fisher-Yates shuffle, by converting the list into an array *)
 
-  let extract_rand list len = 
-    extract [] (random len) list 
-  in
-
-  let rec aux acc list len = 
-    if len = 0 then acc else
-      let picked, rest = extract_rand list len in 
-      aux (picked :: acc) rest (len-1)
-  in
-
-  let len = List.length list in
-
-  aux [] list len 
-;;
-
-
-assert (permutation [`a;`b;`c;`d;`e;`f] = [`b;`d;`a;`e;`c;`f]) ;;
-
-
+let permutation l = let a = Array.of_list l in let swap i j = let oi = a.(i) in a.(i) <- a.(j); a.(j) <- oi in
+    for i = List.length l - 1 downto 0 do
+        swap i (Random.int (i + 1))
+    done;
+    Array.to_list a
+        

@@ -1,9 +1,8 @@
 (* Determine the GCD of two positive integer numbers. *)
 
-let rec gcd a b = 
-  if a < b then gcd b a else
-    if b = 0 then a else
-      gcd b (a mod b)
+let rec gcd a = function
+    | 0 -> a
+    | b -> gcd b (a mod b)
 ;;
 
 assert (gcd 13 27 = 1) ;;

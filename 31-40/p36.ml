@@ -1,18 +1,19 @@
 (* Determine the prime factors of of a given positive integer. *)
 
-let divides d n = (n mod d) = 0 ;;
+(* Still it's not as elegant as the given one. *)
 
-let factors n = 
-  let rec aux d n = 
-    if n = 1 then [] else 
-      if divides d n then 
-	match aux d (n / d) with 
-	  | (h,n) :: t when h = d -> (h,n+1) :: t
-	  | l -> (d,1) :: l
-      else aux (d+1) n
-  in
-  aux 2 n
+let factors n =
+    let rec r cur lst = function
+        | 1 -> lst
+        | rem when (rem mod cur = 0) -> r cur 
+            begin match lst with
+                | (cn, ct)::tl when (cn = cur) -> ((cur, ct + 1)::tl)
+                | tl -> (cur, 1)::tl
+            end (rem / cur)
+        | rem -> r (cur + 1) lst rem
+    in
+    List.rev (r 2 [] n)
 ;;
-
+    
 assert (factors 315 = [3,2 ; 5,1 ; 7,1]) ;;
   

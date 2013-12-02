@@ -1,15 +1,22 @@
 (* Calculate Euler's totient function phi(m) *)
 
-let rec gcd a b = if b = 0 then a else gcd b (a mod b) ;;
-let coprime a b = gcd a b = 1 ;;
+(* The answer of 32 *)
 
-let phi n = 
-  let rec aux acc d = 
-    if d < n then
-      aux (if coprime n d then acc + 1 else acc) (d + 1)
-    else acc
-  in
-  if n = 1 then 1 else aux 0 1
+let rec gcd a = function
+    | 0 -> a
+    | b -> gcd b (a mod b)
+;;
+
+(* The answer of 33 *)
+
+let coprime a b = (gcd a b) = 1;;
+
+(* Using the answers of 32 and 33 *)
+
+let rec phi ?cur ?(acc=0) m = match cur with
+    | None -> phi ~cur:m m
+    | Some 0 -> acc
+    | Some i ->  phi ~cur:(i - 1) ~acc:(if coprime m i then acc + 1 else acc) m
 ;;
 
 assert (phi 10 = 4) ;;

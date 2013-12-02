@@ -81,6 +81,7 @@
 (* 27. Group the elements of a set into disjoint subsets. *)
 
     (* Using the answer of 26 *)
+    
     let group lst dis = 
         let kill lst exc = List.filter (fun i -> not (List.mem i exc)) lst in
         let rec pick_from_dis done_part survivers = function
@@ -100,3 +101,4 @@
             Hashtbl.replace mt len (ori + 1)
         in
         List.map (fun (f, a) -> a) (List.sort (fun (f1, _) (f2,_) -> f1 - f2) (List.map (fun (l, a) -> (Hashtbl.find mt l, a)) (List.map (fun a -> let l = List.length a in mkd l; (l, a)) lst)))
+        
